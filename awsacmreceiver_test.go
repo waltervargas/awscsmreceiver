@@ -131,7 +131,7 @@ func TestWriteCSV(t *testing.T) {
 	}
 
 	var got bytes.Buffer
-	writerFunc := awscsmreceiver.WriteCSV(&got)
+	writerFunc := awscsmreceiver.WriteCSVHandler(&got)
 	writerFunc(testMsg)
 
 	want := bytes.NewBufferString("Type,Region,Service,Api,XAmznRequestId,Attempts,Latency,Timestamp,Version,HttpStatusCode,FinalHttpStatusCode,MaxRetriesExceeded\nTestType,TestRegion,TestService,TestApi,TestRequestId,1,100,1234567890,2,200,200,0\n")

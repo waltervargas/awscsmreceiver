@@ -84,13 +84,13 @@ func ListenAndServe(addr string, handler MessageHandler) error {
 	}
 }
 
-// WriteCSV returns a function that takes a CSMMessage as input and writes it as a CSV line
+// WriteCSVHandler returns a function that takes a CSMMessage as input and writes it as a CSV line
 // to the provided io.Writer. The returned function can be used as a MessageHandler for the
 // ListenAndServe function. The CSV header is written to the io.Writer before returning the function.
 //
 // Usage:
 //     buf := new(bytes.Buffer)
-//     csvWriter := WriteCSV(buf)
+//     csvWriter := WriteCSVHandler(buf)
 //     msg := CSMMessage{...}
 //     csvWriter(msg)
 //
@@ -99,7 +99,7 @@ func ListenAndServe(addr string, handler MessageHandler) error {
 //
 // Returns:
 //   - A function that takes a CSMMessage as input and writes its data as a CSV line to the provided io.Writer.
-func WriteCSV(buf io.Writer) func(CSMMessage){
+func WriteCSVHandler(buf io.Writer) func(CSMMessage){
 	csvHead := "Type,Region,Service,Api,XAmznRequestId,Attempts,Latency,Timestamp,Version,HttpStatusCode,FinalHttpStatusCode,MaxRetriesExceeded"
 	fmt.Fprintln(buf, csvHead)
 	return func(msg CSMMessage) {
