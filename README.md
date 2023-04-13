@@ -12,7 +12,7 @@ processing AWS Client Side Monitoring (CSM) messages received via UDP.
 # Installation
 
 ```sh
-go get github.com/waltervargas/awscsmreceiver@v0.0.1
+go get github.com/waltervargas/awscsmreceiver@v0.1.0
 ```
 
 # Usage
