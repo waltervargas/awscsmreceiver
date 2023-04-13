@@ -19,7 +19,7 @@ import (
 func main() {
 	// TODO: (walter) on next iteration, main will just log ot STDOUT and on
 	// Ctrl-C will write the formated CSV.
-	err := awscsmreceiver.ListenAndServe("127.0.0.1:31000", awscsmreceiver.WriteCSV(os.Stdout))
+	err := awscsmreceiver.ListenAndServe("127.0.0.1:31000", awscsmreceiver.WriteCSVHandler(os.Stdout))
 	if err != nil {
 		log.Fatalf("unable to start UDP server: %s\n", err)
 	}
