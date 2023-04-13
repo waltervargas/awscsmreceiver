@@ -30,23 +30,23 @@ func TestParseCSMMessage(t *testing.T) {
 	}`
 
 	want := awscsmreceiver.CSMMessage{
-		Api:      "ListRoles",
-		Service:  "IAM",
-		Type:     "ApiCall",
-		Region:   "eu-central-1",
-		Attempts: 1,
-		Latency:  817,
-		XAmznRequestId: "c14c9ae3-ed1a-3382-75c1-765270f6922a",
+		Api:                 "ListRoles",
+		Service:             "IAM",
+		Type:                "ApiCall",
+		Region:              "eu-central-1",
+		Attempts:            1,
+		Latency:             817,
+		XAmznRequestId:      "c14c9ae3-ed1a-3382-75c1-765270f6922a",
 		FinalHttpStatusCode: 200,
-		Timestamp: 1681236061717,
-		UserAgent: "APN/1.0 HashiCorp/1.0 Terraform/1.1.7 (+https://www.terraform.io) terraform-provider-aws/4.62.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.44.237 (go1.19.7; linux; arm64)",
+		Timestamp:           1681236061717,
+		UserAgent:           "APN/1.0 HashiCorp/1.0 Terraform/1.1.7 (+https://www.terraform.io) terraform-provider-aws/4.62.0 (+https://registry.terraform.io/providers/hashicorp/aws) aws-sdk-go/1.44.237 (go1.19.7; linux; arm64)",
 	}
 
 	got, err := awscsmreceiver.ParseCSMMessage(input)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if (!cmp.Equal(want, got)) {
+	if !cmp.Equal(want, got) {
 		t.Error(cmp.Diff(want, got))
 	}
 }
@@ -69,7 +69,7 @@ func TestListenAndServe(t *testing.T) {
 		}
 
 		if !cmp.Equal(want, got) {
-			t.Error(cmp.Diff(want,got))
+			t.Error(cmp.Diff(want, got))
 		}
 
 		wg.Done()
@@ -119,18 +119,18 @@ func TestListenAndServe(t *testing.T) {
 func TestWriteCSV(t *testing.T) {
 	t.Parallel()
 	testMsg := awscsmreceiver.CSMMessage{
-		Type:               "TestType",
-		Region:             "TestRegion",
-		Service:            "TestService",
-		Api:                "TestApi",
-		XAmznRequestId:     "TestRequestId",
-		Attempts:           1,
-		Latency:            100,
-		Timestamp:          1234567890,
-		Version:            2,
-		HttpStatusCode:     200,
+		Type:                "TestType",
+		Region:              "TestRegion",
+		Service:             "TestService",
+		Api:                 "TestApi",
+		XAmznRequestId:      "TestRequestId",
+		Attempts:            1,
+		Latency:             100,
+		Timestamp:           1234567890,
+		Version:             2,
+		HttpStatusCode:      200,
 		FinalHttpStatusCode: 200,
-		MaxRetriesExceeded: 0,
+		MaxRetriesExceeded:  0,
 	}
 
 	var got bytes.Buffer

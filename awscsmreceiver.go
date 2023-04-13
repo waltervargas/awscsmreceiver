@@ -11,20 +11,20 @@ import (
 
 // CSMMessage represents a single AWS Client Side Monitoring (CSM) message.
 type CSMMessage struct {
-	Api      string `json:"Api"`
-	Type     string `json:"Type"`
-	Region   string `json:"Region"`
-	Service  string `json:"Service"`
-	AccessKey string `json:"AccessKey"`
-	UserAgent string `json:"UserAgent"`
-	XAmznRequestId string `json:"XAmznRequestId"`
-	Timestamp int   `json:"Timestamp"`
-	Attempts int    `json:"AttemptCount"`
-	Latency  int    `json:"Latency"`
-	Version int `json:"Version"`
-	HttpStatusCode int `json:"HttpStatusCode"`
-	FinalHttpStatusCode int `json:"FinalHttpStatusCode"`
-	MaxRetriesExceeded int `json:"MaxRetriesExceeded"`
+	Api                 string `json:"Api"`
+	Type                string `json:"Type"`
+	Region              string `json:"Region"`
+	Service             string `json:"Service"`
+	AccessKey           string `json:"AccessKey"`
+	UserAgent           string `json:"UserAgent"`
+	XAmznRequestId      string `json:"XAmznRequestId"`
+	Timestamp           int    `json:"Timestamp"`
+	Attempts            int    `json:"AttemptCount"`
+	Latency             int    `json:"Latency"`
+	Version             int    `json:"Version"`
+	HttpStatusCode      int    `json:"HttpStatusCode"`
+	FinalHttpStatusCode int    `json:"FinalHttpStatusCode"`
+	MaxRetriesExceeded  int    `json:"MaxRetriesExceeded"`
 }
 
 // ParseCSMMessage parses a JSON payload string into a CSMMessage struct.
@@ -89,25 +89,26 @@ func ListenAndServe(addr string, handler MessageHandler) error {
 // ListenAndServe function. The CSV header is written to the io.Writer before returning the function.
 //
 // Usage:
-//     buf := new(bytes.Buffer)
-//     csvWriter := WriteCSVHandler(buf)
-//     msg := CSMMessage{...}
-//     csvWriter(msg)
+//
+//	buf := new(bytes.Buffer)
+//	csvWriter := WriteCSVHandler(buf)
+//	msg := CSMMessage{...}
+//	csvWriter(msg)
 //
 // Parameters:
 //   - buf: An io.Writer to which the CSV header and CSMMessage data will be written.
 //
 // Returns:
 //   - A function that takes a CSMMessage as input and writes its data as a CSV line to the provided io.Writer.
-func WriteCSVHandler(buf io.Writer) func(CSMMessage){
+func WriteCSVHandler(buf io.Writer) func(CSMMessage) {
 	csvHead := "Type,Region,Service,Api,XAmznRequestId,Attempts,Latency,Timestamp,Version,HttpStatusCode,FinalHttpStatusCode,MaxRetriesExceeded"
 	fmt.Fprintln(buf, csvHead)
 	return func(msg CSMMessage) {
-		fmt.Fprintf(buf, "%s,%s,%s,%s,%s,%d,%d,%d,%d,%d,%d,%d\n", 
+		fmt.Fprintf(buf, "%s,%s,%s,%s,%s,%d,%d,%d,%d,%d,%d,%d\n",
 			msg.Type,
-			msg.Region, 
-			msg.Service, 
-			msg.Api, 
+			msg.Region,
+			msg.Service,
+			msg.Api,
 			msg.XAmznRequestId,
 			msg.Attempts,
 			msg.Latency,
