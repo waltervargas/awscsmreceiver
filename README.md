@@ -1,3 +1,5 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/waltervargas/awscsmreceiver.svg)](https://pkg.go.dev/github.com/waltervargas/awscsmreceiver)[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)[![Go Report Card](https://goreportcard.com/badge/github.com/waltervargas/awscsmreceiver)](https://goreportcard.com/report/github.com/waltervargas/awscsmreceiver)
+
 # AWS Client-Side Monitoring (CSM) Receiver Package
 
 `awscsmreceiver` is a Go package that provides functionality for parsing and
