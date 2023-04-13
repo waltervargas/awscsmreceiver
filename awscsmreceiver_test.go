@@ -13,6 +13,7 @@ import (
 )
 
 func TestParseCSMMessage(t *testing.T) {
+	t.Parallel()
 	input := `{
 		"ClientId": "",
 		"Api": "ListRoles",
@@ -51,6 +52,7 @@ func TestParseCSMMessage(t *testing.T) {
 }
 
 func TestListenAndServe(t *testing.T) {
+	t.Parallel()
 	addr := "127.0.0.1:31000"
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -115,6 +117,7 @@ func TestListenAndServe(t *testing.T) {
 }
 
 func TestWriteCSV(t *testing.T) {
+	t.Parallel()
 	testMsg := awscsmreceiver.CSMMessage{
 		Type:               "TestType",
 		Region:             "TestRegion",
