@@ -14,7 +14,7 @@ processing AWS Client Side Monitoring (CSM) messages received via UDP.
 # Installation
 
 ```sh
-go get github.com/waltervargas/awscsmreceiver@v0.1.0
+go get github.com/waltervargas/awscsmreceiver@v0.1.1
 ```
 
 # Usage
