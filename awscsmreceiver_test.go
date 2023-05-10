@@ -59,6 +59,7 @@ func TestListenAndServe(t *testing.T) {
 
 	// Define the message handler function
 	handler := func(got awscsmreceiver.CSMMessage) {
+		defer wg.Done()
 		want := awscsmreceiver.CSMMessage{
 			Api:      "ListRoles",
 			Service:  "IAM",
@@ -71,8 +72,6 @@ func TestListenAndServe(t *testing.T) {
 		if !cmp.Equal(want, got) {
 			t.Error(cmp.Diff(want, got))
 		}
-
-		wg.Done()
 	}
 
 	// Start the UDP server
@@ -112,7 +111,86 @@ func TestListenAndServe(t *testing.T) {
 		t.Fatalf("Error sending test message: %s", err)
 	}
 
-	// Wait for the handler to process the message
+	wg.Wait()
+}
+
+func TestListenAndServeStop(t *testing.T) {
+	t.Parallel()
+	addr := "127.0.0.1:32000"
+
+	// this channel enables to control the udp listener
+	// when closed the udp listener is closed
+	stopChan := make(chan struct{})
+
+	// test have to wait until the handler function that is called inside a go
+	// routine is able to process the message. Otherwise the call to t.Error is
+	// a noop, which makes the ilussion that the test is passing.
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	// an additional wait group is needed for the server, due the fact that the
+	// server also runs in a go routine, the server go routine can receive the
+	// message and call the handler but the handler may not be ready to process
+	// the message, and then the wg.Done() call will never happens, making the
+	// test to hang waiting for it.
+	var serverReady sync.WaitGroup
+	serverReady.Add(1)
+
+	// Define the message handler function
+	handler := func(got awscsmreceiver.CSMMessage) {
+		defer wg.Done()
+		want := awscsmreceiver.CSMMessage{
+			Api:      "ListRoles",
+			Service:  "IAM",
+			Type:     "ApiCall",
+			Region:   "eu-central-1",
+			Attempts: 1,
+			Latency:  817,
+		}
+
+		if !cmp.Equal(want, got) {
+			t.Error(cmp.Diff(want, got))
+		}
+
+		close(stopChan)
+	}
+
+	// Start the UDP server
+	go func() {
+		serverReady.Done()
+		err := awscsmreceiver.ListenAndServeStop(addr, handler, stopChan)
+		if err != nil {
+			t.Errorf("unable to start UDP server: %s", err)
+		}
+	}()
+
+	serverReady.Wait()
+	// Send a test CSM message
+	conn, err := net.Dial("udp", addr)
+	if err != nil {
+		t.Fatalf("unable dial UDP server: %s", err)
+	}
+	defer conn.Close()
+
+	testMsg := awscsmreceiver.CSMMessage{
+		Api:      "ListRoles",
+		Service:  "IAM",
+		Type:     "ApiCall",
+		Region:   "eu-central-1",
+		Attempts: 1,
+		Latency:  817,
+	}
+
+	payload, err := json.Marshal(testMsg)
+	if err != nil {
+		t.Fatalf("Error marshalling test message: %s", err)
+	}
+
+	_, err = conn.Write(payload)
+	if err != nil {
+		t.Fatalf("Error sending test message: %s", err)
+	}
+
 	wg.Wait()
 }
 
