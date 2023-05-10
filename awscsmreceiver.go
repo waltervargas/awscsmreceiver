@@ -80,7 +80,49 @@ func ListenAndServe(addr string, handler MessageHandler) error {
 		}
 
 		// Process the message using the provided handler
-		handler(msg)
+		go handler(msg)
+	}
+}
+
+func ListenAndServeStop(addr string, handler MessageHandler, stopCh <-chan struct{}) error {
+	// Resolve the address and create a UDP connection
+	udpAddr, err := net.ResolveUDPAddr("udp", addr)
+	if err != nil {
+		return err
+	}
+
+	conn, err := net.ListenUDP("udp", udpAddr)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// Create a buffer to receive the data
+	buf := make([]byte, 1024)
+
+	for {
+		select {
+		case <-stopCh:
+			// stop signal received, stop listening
+			fmt.Print("closing udp listener...")
+			return nil
+
+		default:
+			// Read the incoming data into the buffer
+			n, _, err := conn.ReadFromUDP(buf)
+			if err != nil {
+				continue
+			}
+
+			// Parse the CSM message
+			msg, err := ParseCSMMessage(string(buf[:n]))
+			if err != nil {
+				continue
+			}
+
+			// Process the message using the provided handler
+			go handler(msg)
+		}
 	}
 }
 
